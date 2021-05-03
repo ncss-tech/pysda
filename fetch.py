@@ -47,7 +47,7 @@ def wkt(wkt=str, meta=False):
     
     q = """~DeclareGeometry(@aoi)~
 
-    select @aoi = geometry::STPolyFromText('""" + wkt + """', 4326)
+    select @aoi = geometry::STPolyFromText('""" + wkt + """' , 4326)
 
     ~DeclareIdGeomTable(@outtable)~
     ~GetClippedMapunits(@aoi,polygon,geo,@outtable)~
@@ -56,7 +56,7 @@ def wkt(wkt=str, meta=False):
     into #temp
     from @outtable;
     
-    select areasymbol, areaname, muname, musym, mukey, nationalmusym, geom
+    select areasymbol, areaname, muname, musym, mukey, nationalmusym as nat_musym, geom
     from #temp, legend, mapunit
     where #temp.id = mapunit.mukey and mapunit.lkey = legend.lkey"""
     
@@ -268,5 +268,6 @@ from requests import exceptions
 
 # wkt strings are long...
 pd.set_option('display.max_colwidth', None)
+
 
 
