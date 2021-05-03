@@ -60,7 +60,7 @@ def wkt(wkt=str, meta=False):
     from #temp, legend, mapunit
     where #temp.id = mapunit.mukey and mapunit.lkey = legend.lkey"""
     
-    print(q)
+    # print(q)
     
     try:
         theURL = "https://sdmdataaccess.nrcs.usda.gov"
