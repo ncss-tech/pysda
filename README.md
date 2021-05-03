@@ -1,6 +1,6 @@
 # pysda
  
-The purpose of this repository is intended to expose the functionality of Soil Data Access within python as an readily available tool waiting to be called upon.  It was inspired by the woork of soilDB, sharpShootR, ...  Python users no longer have to be jealous of the R folks when they want answers quick.
+The purpose of this repository is intended to expose the functionality of Soil Data Access within python as an readily available tool waiting to be called upon.  It was inspired by the work of soilDB, sharpShootR, ...  Python users no longer have to be jealous of the R folks when they want answers quick.
 
 Currently users can submit for both tabular and spatial data.  The results are returned to a (geo)pandas data frame, and spatial data can optionally be exported the same location fas the source of the AOI.  AOIs can be provided as shapefile, geopackage layers, fille, ESRI file geodatabase feature class, or WKT string.  Exports of spatial data DO NOT go back to ESRI file geodatabases.  They are written to the parent directory of the geodatabse.  All spatial data submitted to Soil Data Access must be in EPSG 4326 (WGS84).  This is what Soil Data Access returns.
 
