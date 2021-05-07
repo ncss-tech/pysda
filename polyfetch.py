@@ -37,7 +37,32 @@ def tab(q, meta = False):
     return df
         
 
-def wkt(wkt=str, meta=False):
+def sdaCall(gdf, meta=False):
+    
+    invalid = ['POINT','MULTIPOINT','LINESTRING','MULTILINESTRING']    
+    gtype = [g.upper() for g in gdf.geom_type.to_list()]
+    
+    test = any(g in gtype for g in invalid)
+    
+    if test:
+        
+        raise TypeError('Only (MULTI)POLYGON geometry type allowed')
+    
+    if not gdf.crs == 'WGS 84':
+         msg('Transforming shp to WGS 84')
+         gdf = gdf.to_crs("EPSG:4326")
+    
+    if len(gdf) > 1:
+        dVal = 1
+        gdf['df'] = dVal
+        gdf = gdf.dissolve(by = 'df')   
+        
+            
+    # make the smallest request possible
+    hull = gdf["geometry"].convex_hull
+    
+    # get the wkt representation of the convex hull
+    wkt_str = hull.geometry.to_string(index = False, header = False)
     
     """Grab SSURGO geometry from user define AOI in wkt format
     
@@ -47,7 +72,7 @@ def wkt(wkt=str, meta=False):
     
     q = """~DeclareGeometry(@aoi)~
 
-    select @aoi = geometry::STPolyFromText('""" + wkt + """' , 4326)
+    select @aoi = geometry::STPolyFromText('""" + wkt_str + """' , 4326)
 
     ~DeclareIdGeomTable(@outtable)~
     ~GetClippedMapunits(@aoi,polygon,geo,@outtable)~
@@ -60,7 +85,7 @@ def wkt(wkt=str, meta=False):
     from #temp, legend, mapunit
     where #temp.id = mapunit.mukey and mapunit.lkey = legend.lkey"""
     
-    print(q)
+    # print(q)
     
     try:
         theURL = "https://sdmdataaccess.nrcs.usda.gov"
@@ -86,11 +111,13 @@ def wkt(wkt=str, meta=False):
     
         df = pd.DataFrame(data, columns = cols)
         geometry = df['geom'].map(shapely.wkt.loads)
-        gdf = gpd.GeoDataFrame(df, crs = "EPSG:4326", geometry = geometry)
-    
-        #gdf = gpd.GeoDataFrame(df, geometry='geom')
         
-        return gdf
+        sda_gdf = gpd.GeoDataFrame(df, crs = "EPSG:4326", geometry = geometry)
+    
+        # assume it has to be clipped to original polygon
+        result = gpd.clip(sda_gdf, gdf)
+        
+        return result
         
     
     except (exceptions.InvalidURL, exceptions.HTTPError, exceptions.Timeout):
@@ -121,32 +148,19 @@ def shp(shp=str, meta=False, export=False, name=None):
     err = None
     
     if not shp.endswith(".shp"):
-        err = 'input shp '  + shp + ' does not appear to be a shapefile'
+        err = 'input '  + shp + ' does not appear to be a shapefile'
         raise TypeError(err)
 
     else:
         gdf = gpd.read_file(shp)
     
-    if not gdf.crs == 'WGS 84':
-         msg('Transforming shp to WGS 84')
-         gdf = gdf.to_crs("EPSG:4326")
     
-    if len(gdf) > 1:
-        dVal = 1
-        gdf['df'] = dVal
-        gdf = gdf.dissolve(by = 'df')
-        
-    # make the smallest request possible
-    hull = gdf["geometry"].convex_hull
-    wkt_str = hull.geometry.to_string(index = False, header = False)
+    soils = sdaCall(gdf)
     
-    hull_soils = wkt(wkt=wkt_str)
-    
-    result = gpd.clip(hull_soils, gdf)
     
     if export:
         
-        result.drop(['geom'], axis = 1, inplace=True)
+        soils.drop(['geom'], axis = 1, inplace=True)
         
         dest = os.path.dirname(shp)
         
@@ -157,14 +171,11 @@ def shp(shp=str, meta=False, export=False, name=None):
         else:
             name = 'SSURGO_WGS84.shp'
     
-        result.to_file(os.path.join(dest, name))
+        soils.to_file(os.path.join(dest, name))
+
+    return soils
     
-    else:
-        pass
-    
-    return result
-        
-    
+
 def gpkg(gpkg=str, layer=str, meta=False, export=False, name=None):
     
     """Grab SSURGO soil polygons using input geopackage layer for extent
@@ -178,36 +189,19 @@ def gpkg(gpkg=str, layer=str, meta=False, export=False, name=None):
     
     gdf = gpd.read_file(filename=gpkg, layer=layer)
     
-    if not gdf.crs == 'WGS 84':
-        msg('Transforming shp to WGS 84')
-        gdf = gdf.to_crs("EPSG:4326")
-        
-    if len(gdf) > 1:
-        dVal = 1
-        gdf['df'] = dVal
-        gdf = gdf.dissolve(by = 'df')
-    
-    # make the smallest request possible
-    hulls = gdf["geometry"].convex_hull
-    wkt_str = hulls.geometry.to_string(index = False, header = False)
-    hull_soils = wkt(wkt=wkt_str)
-    
-    result = gpd.clip(hull_soils, gdf)
+    soils = sdaCall(gdf, meta=False)
     
     if export:
         
-        result.drop(['geom'], axis = 1, inplace=True)
+        soils.drop(['geom'], axis = 1, inplace=True)
         
         if name is None:
             name = "SSURGO_WGS84"  
     
-        result.to_file(gpkg, layer=name, driver="GPKG")
+        soils.to_file(gpkg, layer=name, driver="GPKG")
     
-    else:
-        pass
-            
+    return soils
     
-    return result
 
 def fgdb(gdb=str, layer=str, meta=False, export=False, name=None):
     
@@ -225,42 +219,39 @@ def fgdb(gdb=str, layer=str, meta=False, export=False, name=None):
     idx = lyrs.index(layer)
    
     gdf = gpd.read_file(filename=gdb, layer=idx)
-   
-    if not gdf.crs == 'WGS 84':
-        msg('Transforming shp to WGS 84')
-        gdf = gdf.to_crs("EPSG:4326")
     
-    if len(gdf) > 1:
-        dVal = 1
-        gdf['df'] = dVal
-        gdf = gdf.dissolve(by = 'df')
-    
-    # make the smallest request possible    
-    hulls = gdf["geometry"].convex_hull
-    wkt_str = hulls.geometry.to_string(index = False, header = False)            
-    hull_soils = wkt(wkt=wkt_str)
-    
-    result = gpd.clip(hull_soils, gdf)
-
+    soils = sdaCall(gdf)
     
     if export:
         
         dest = os.path.dirname(gdb)
         
-        result.drop(['geom'], axis = 1, inplace=True)
+        soils.drop(['geom'], axis = 1, inplace=True)
         
         if name is None:
             name = "SSURGO_WGS84"  
     
-        result.to_file(dest, layer=name)
+        soils.to_file(dest, layer=name)
     
+    return soils
+   
+def gdf(geodf, meta=False):
+    """Grab SSURGO soil polygons using existing GeoDataFrame
+
+    :object geodf: GeoDataFrame\n
+    :boolean meta: column metadata returned in JSON string, arcgis features classes only\n
+    :return: geopandas data frame epsg 4326"""
     
-    return result
-     
+    if str(type(geodf)) != "<class 'geopandas.geodataframe.GeoDataFrame'>":
+        err = 'input does not appear to be a valid GeoDataFrame'
+        raise TypeError(err)
     
+    soils = sdaCall(geodf)
     
+    return soils
+
 import sys, os, json, requests, pandas as pd, geopandas as gpd, shapely, fiona
-from shapely import wkt as swkt
+# from shapely import wkt as swkt
 
 from json.decoder import JSONDecodeError
 from requests import exceptions
@@ -268,5 +259,14 @@ from requests import exceptions
 # wkt strings are long...
 pd.set_option('display.max_colwidth', None)
 
+
+    
+        
+    
+    
+
+    
+        
+    
 
 
