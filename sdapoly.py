@@ -11,33 +11,58 @@ def msg(s):
     print(s)
     
 def tab(q, meta = False):
+    
+    import json, requests, pandas as pd
+    from json.decoder import JSONDecodeError
+    from requests import exceptions
+    
+    try:
 
-    theURL = "https://sdmdataaccess.nrcs.usda.gov"
-    theURL = theURL + "/Tabular/SDMTabularService/post.rest"
-    
-    rDic = {}
-    
-    if meta:
-        rDic["format"] = "JSON+COLUMNNAME+METADATA"
-    else:
-        rDic["format"] = "JSON+COLUMNNAME"
-    
-    rDic["query"] = q
-    rData = json.dumps(rDic)
-    
-    results = requests.post(data=rData, url=theURL) 
-    
-    qData = results.json()
+        theURL = "https://sdmdataaccess.nrcs.usda.gov"
+        theURL = theURL + "/Tabular/SDMTabularService/post.rest"
         
-    cols = qData.get('Table')[0]
-    data = qData.get('Table')[1:]
+        rDic = {}
         
-    df = pd.DataFrame(data, columns = cols)
+        if meta:
+            rDic["format"] = "JSON+COLUMNNAME+METADATA"
+        else:
+            rDic["format"] = "JSON+COLUMNNAME"
         
-    return df
+        rDic["query"] = q
+        rData = json.dumps(rDic)
+        
+        results = requests.post(data=rData, url=theURL) 
+        
+        qData = results.json()
+            
+        cols = qData.get('Table')[0]
+        data = qData.get('Table')[1:]
+            
+        df = pd.DataFrame(data, columns = cols)
+            
+        return df
+    
+    except (exceptions.InvalidURL, exceptions.HTTPError, exceptions.Timeout):
+        print('Requests error, Soil Data Access offline??')
+        
+    except JSONDecodeError as err:
+        print('JSON Decode error: ' + err.msg)
+        print('This usually happens when the extent is too large, try smaller extent.')
+     
+    
+    except Exception as e:
+        print('Unhandled error')
+        print(e)
         
 
 def sdaCall(gdf, meta=False):
+     
+    import json, requests, geopandas as gpd, pandas as pd, shapely
+    from json.decoder import JSONDecodeError
+    from requests import exceptions
+    
+    pd.set_option('display.max_colwidth', None)
+    
     
     invalid = ['POINT','MULTIPOINT','LINESTRING','MULTILINESTRING']    
     gtype = [g.upper() for g in gdf.geom_type.to_list()]
@@ -142,8 +167,12 @@ def shp(shp=str, meta=False, export=False, name=None):
     :str shp: path to shp file for AOI
     :boolean meta: get the column metadata returned in the JSON string, only suitable for arcgis features classes:\n
     :boolean export: write results to source directory
-    :str name: provide a name with, if None, SSURGO_WGS84.shp used
+    :str name: provide a shapefile name. If None, SSURGO_WGS84.shp used
     :return: geopandas data frame epsg 4326"""
+    
+    import os, geopandas as gpd, pandas as pd
+    pd.set_option('display.max_colwidth', None)
+    
     
     err = None
     
@@ -177,6 +206,8 @@ def shp(shp=str, meta=False, export=False, name=None):
     
 
 def gpkg(gpkg=str, layer=str, meta=False, export=False, name=None):
+    import geopandas as gpd, pandas as pd
+    pd.set_option('display.max_colwidth', None)
     
     """Grab SSURGO soil polygons using input geopackage layer for extent
     
@@ -204,6 +235,8 @@ def gpkg(gpkg=str, layer=str, meta=False, export=False, name=None):
     
 
 def fgdb(gdb=str, layer=str, meta=False, export=False, name=None):
+    import os, fiona, geopandas as gpd, pandas as pd
+    pd.set_option('display.max_colwidth', None)
     
     """Grab SSURGO soil polygons using file geodatabse layer for extent
     
@@ -250,14 +283,13 @@ def gdf(geodf, meta=False):
     
     return soils
 
-import sys, os, json, requests, pandas as pd, geopandas as gpd, shapely, fiona
+#import sys, os, json, requests, pandas as pd, geopandas as gpd, shapely, fiona
 # from shapely import wkt as swkt
 
-from json.decoder import JSONDecodeError
-from requests import exceptions
+
 
 # wkt strings are long...
-pd.set_option('display.max_colwidth', None)
+# pd.set_option('display.max_colwidth', None)
 
 
     
