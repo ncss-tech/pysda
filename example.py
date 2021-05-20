@@ -5,21 +5,37 @@ Created on Mon May  3 08:48:19 2021
 @author: Charles.Ferguson
 """
 
-import sys, os
+import sys
+import matplotlib.pyplot as plt
 
-# supply the directory with the fetch.py script
-sys.path.append(r'D:\GIS\TOOLBOXES\pysda')
+sys.path.append(r"d:\gis\toolboxes\pysda")
 
-# import the fetch.py script that 
-# makes the call to Soil Data Access
-import fetch as sda
+# import pysda
+import sdapoly, sdaprop, sdainterp
 
-# specify your polygons (shapefile, geopackage, filegdb)
-myshp = r'C:\Temp\sda_call_ex.shp'
+# get/set an aoi
+myshp = r"F:\ZBOOK\GIS\TEMP\fs.shp"
+myaoi = sdapoly.shp(myshp)
 
-# make the call
-# shp = myshp
-# meta = False
-# export = True if you want to write the results to disk, same format in WGS84
-# name = results name
-soils = sda.shp(shp = myshp, meta = False, export= True, name = 'my_soils')
+myaoi.plot()
+
+# now to get SSURGO property, sandtotal_r
+wtdavg=sdaprop.getprop(df=myaoi,column='mukey',method='wtd_avg',top=0,bottom=100,prop='sandtotal_r',minmax=None,prnt=False,meta=False)
+
+# now join/merge the results, show first record
+mymerge = myaoi.merge(wtdavg, how = 'inner', on = 'mukey')
+mymerge.head(1)
+
+# visualize
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots(1,1)
+fig.set_size_inches(5,5)
+mymerge.plot(column = 'sandtotal_r', ax=ax, cmap = 'rainbow',
+            legend = True)
+
+# add a legend
+leg = ax.get_legend()
+leg.set_bbox_to_anchor((1.4,1.0))
+ax.set(title = 'Total Sand - Weighted Average \n 0 - 100 cm')
+
+plt.show()
