@@ -25,6 +25,7 @@ def getinterp(df, column, interp = None, method = None,  prnt = False, meta=Fals
     :str method: aggregation method. Default is weighted average\n
     :bool prnt: set to True to print query\n
     :bool meta: unused variable for future development\n
+    :return: pandas data frame
     """
     
     import json, requests, pandas as pd
@@ -66,7 +67,7 @@ def getinterp(df, column, interp = None, method = None,  prnt = False, meta=Fals
         
         if method == 'dom_comp':
             q = """-- dominant component
-            SELECT areasymbol, musym, muname, mu.mukey  AS MUKEY,
+            SELECT areasymbol, musym, muname, mu.mukey  AS mukey,
             (SELECT interphr FROM component INNER JOIN cointerp ON component.cokey = cointerp.cokey AND component.cokey = c.cokey AND ruledepth = 0 AND mrulename LIKE '""" + interp + """') as rating,
             (SELECT interphrc FROM component INNER JOIN cointerp ON component.cokey = cointerp.cokey AND component.cokey = c.cokey AND ruledepth = 0 AND mrulename LIKE '""" + interp + """') as class,
             (SELECT DISTINCT SUBSTRING(  (  SELECT ( '; ' + interphrc)
@@ -83,7 +84,7 @@ def getinterp(df, column, interp = None, method = None,  prnt = False, meta=Fals
 
         if method == "dom_cond":
             q = """-- dominant condition
-            SELECT areasymbol, musym, muname, mu.mukey/1  AS MUKEY,
+            SELECT areasymbol, musym, muname, mu.mukey/1  AS mukey,
             (SELECT TOP 1 ROUND (AVG(interphr) over(partition by interphrc),2)
             FROM mapunit
             INNER JOIN component ON component.mukey=mapunit.mukey
@@ -115,7 +116,7 @@ def getinterp(df, column, interp = None, method = None,  prnt = False, meta=Fals
         # weighted averge (default)
         if method == 'wtd_avg':
             q = """--weighted average
-            SELECT areasymbol, musym, muname, mu.mukey/1  AS MUKEY,
+            SELECT areasymbol, musym, muname, mu.mukey/1  AS mukey,
             (SELECT TOP 1 CASE WHEN ruledesign = 1 THEN 'limitation'
             WHEN ruledesign = 2 THEN 'suitability' END
             FROM mapunit

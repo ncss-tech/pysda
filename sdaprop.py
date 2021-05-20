@@ -34,6 +34,28 @@ def catprops(show = False):
         print('\n Use short hand version of property to supply to getprop function')
     
     return catdic
+
+def allprops(show = False):
+    
+    import collections
+    
+    """All SSURGO propeties
+    :bool show: set to True to print on screen.  Use shorthand notation for prop(erty) assignment.\n
+    :return: dictionary of call available SSURGO properties"""
+     
+    nprops = numprops()
+    cprops = catprops()
+    
+    aprops = {**nprops, **cprops}
+    saprops = collections.OrderedDict(sorted(aprops.items()))
+    
+    if show:
+        for k,v in saprops.items():
+            print(k,v)
+        print('\n Use short hand version of property to supply to getprop function')
+    
+    return saprops
+    
  
 
 # (aProp, areaSym, aggMethod, tDep, bDep, mmC)

@@ -185,11 +185,9 @@ def shp(shp=str, meta=False, export=False, name=None):
     
     
     soils = sdaCall(gdf)
-    
+    soils.drop(['geom'], axis = 1, inplace=True)
     
     if export:
-        
-        soils.drop(['geom'], axis = 1, inplace=True)
         
         dest = os.path.dirname(shp)
         
@@ -206,8 +204,6 @@ def shp(shp=str, meta=False, export=False, name=None):
     
 
 def gpkg(gpkg=str, layer=str, meta=False, export=False, name=None):
-    import geopandas as gpd, pandas as pd
-    pd.set_option('display.max_colwidth', None)
     
     """Grab SSURGO soil polygons using input geopackage layer for extent
     
@@ -217,6 +213,9 @@ def gpkg(gpkg=str, layer=str, meta=False, export=False, name=None):
     :boolean export: write results to source geopackage\n
     :str name: output layer name with, if None SSURGO_WGS8 used\n
     :return: geopandas data frame epsg 4326"""
+    
+    import geopandas as gpd, pandas as pd
+    pd.set_option('display.max_colwidth', None)
     
     gdf = gpd.read_file(filename=gpkg, layer=layer)
     
@@ -235,8 +234,6 @@ def gpkg(gpkg=str, layer=str, meta=False, export=False, name=None):
     
 
 def fgdb(gdb=str, layer=str, meta=False, export=False, name=None):
-    import os, fiona, geopandas as gpd, pandas as pd
-    pd.set_option('display.max_colwidth', None)
     
     """Grab SSURGO soil polygons using file geodatabse layer for extent
     
@@ -246,6 +243,9 @@ def fgdb(gdb=str, layer=str, meta=False, export=False, name=None):
     :boolean export: write a .shp result to parent directory of the file geodatabse\n
     :str name: output layer name with, if None SSURGO_WGS8 used\n
     :return: geopandas data frame epsg 4326"""
+    
+    import os, fiona, geopandas as gpd, pandas as pd
+    pd.set_option('display.max_colwidth', None)
     
     # get layerindex
     lyrs = fiona.listlayers(gdb)
