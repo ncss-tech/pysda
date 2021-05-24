@@ -59,7 +59,7 @@ def allprops(show = False):
  
 
 # (aProp, areaSym, aggMethod, tDep, bDep, mmC)
-def getprop(df, column=str, prop = None, method = 'wtd_avg',  top=None, bottom=None, minmax = None, prnt = False, meta=False):
+def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, minmax = None, prnt = False, meta=False):
     
     """Get SSURGO property from Soil Data Access.\n
     :df: pandas data frame\n
@@ -95,26 +95,20 @@ def getprop(df, column=str, prop = None, method = 'wtd_avg',  top=None, bottom=N
     if method in nummethods:
         
         if top is None or bottom is None:
-            err = 'top and bottom parameters are required for the ' + method + ' aggregation method'
+            err = 'Top and bottom parameters are required for the ' + method + ' aggregation method'
             raise TypeError(err)
         
-        if not type(top) or not type(bottom) == int:
-            err ='top and bottom variables must be of type integer'
+        if not type(top) == int or not type(bottom) == int:
+            err ='Top and bottom variables must be of type integer'
             raise TypeError(err)
         
         if bottom < top:
-            err = 'the value of bottom must be greater than value of top'
+            err = 'The value of bottom must be greater (deeper) than the value of top'
             raise AttributeError(err)
         
         if top > 200:
             warn.append('Depths greater than 200 cm are not recommended and may return NULL data')
-        
-        
-        props = numprops(show=False)
-        if not prop in props.values():
-            err = 'the property: ' + prop + ' is not a valid choice for the ' + method + ' aggregation method'
-            raise ValueError(err)
-        
+            
         if method == 'minmax':
             if minmax is None:
                 err = 'min or max needs to be set in order to run the minmax aggregation method'
@@ -123,8 +117,11 @@ def getprop(df, column=str, prop = None, method = 'wtd_avg',  top=None, bottom=N
                 err = 'Unrecognized value for minmax.  Use MIN or MAX'
                 raise ValueError(err)
             
-                
-            
+        props = numprops(show=False)
+        if not prop in props.values():
+            err = 'the property: ' + prop + ' is not a valid choice for the ' + method + ' aggregation method'
+            raise ValueError(err)
+        
     # categoriacal validation
     if method in catmethods:
         props = catprops(show = False)
@@ -333,17 +330,14 @@ def getprop(df, column=str, prop = None, method = 'wtd_avg',  top=None, bottom=N
                 print('\n' + w + '\n')
         
         return property_result
-        
     
     except (exceptions.InvalidURL, exceptions.HTTPError, exceptions.Timeout):
         print('Requests error, Soil Data Access offline??')
-    
         
     except JSONDecodeError as err:
         print('JSON Decode error: ' + err.msg)
         print('This usually happens when nothing is returned. Set prnt option to True and send the query through browser')
      
-    
     except Exception as e:
         print('Unhandled error')
         print(e)

@@ -57,8 +57,8 @@ def getinterp(df, column, interp = None, method = None,  prnt = False, meta=Fals
             raise ValueError(err)
         
         if not method in validmethod:
-            'Unknown aggregation method provided. Specify one of the following:: ' + methodstr
-            
+            err = 'Unknown aggregation method provided. Specify one of the following:: ' + methodstr
+            raise ValueError(err)
     
         df[column] = df[column].astype('string')
         key_list = pd.Series(df[column].unique()).to_list()
@@ -194,12 +194,10 @@ def getinterp(df, column, interp = None, method = None,  prnt = False, meta=Fals
     except (exceptions.InvalidURL, exceptions.HTTPError, exceptions.Timeout):
         print('Requests error, Soil Data Access offline??')
     
-        
     except JSONDecodeError as err:
         print('JSON Decode error: ' + err.msg)
         print('This usually happens when nothing is returned. Set prnt option to True and send the query through browser')
      
-    
     except Exception as e:
         print('Unhandled error')
         print(e)

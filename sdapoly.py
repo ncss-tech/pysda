@@ -127,8 +127,6 @@ def sdaCall(gdf, meta=False):
         rData = json.dumps(rDic)
         
         results = requests.post(data=rData, url=theURL)
-        # print('results are next')
-        # print(results)
         qData = results.json()
         
         cols = qData.get('Table')[0]
@@ -147,12 +145,11 @@ def sdaCall(gdf, meta=False):
     
     except (exceptions.InvalidURL, exceptions.HTTPError, exceptions.Timeout):
         print('Requests error, Soil Data Access offline??')
-    
+
         
     except JSONDecodeError as err:
         print('JSON Decode error: ' + err.msg)
         print('This usually happens when the extent is too large, try smaller extent.')
-     
     
     except Exception as e:
         print('Unhandled error')
@@ -185,22 +182,25 @@ def shp(shp=str, meta=False, export=False, name=None):
     
     
     soils = sdaCall(gdf)
-    soils.drop(['geom'], axis = 1, inplace=True)
     
-    if export:
+    if soils is not None:
         
-        dest = os.path.dirname(shp)
-        
-        if name is not None:
-            if not name.endswith('.shp'):
-                name = name + '.shp'
+        soils.drop(['geom'], axis = 1, inplace=True)
+    
+        if export:
             
-        else:
-            name = 'SSURGO_WGS84.shp'
-    
-        soils.to_file(os.path.join(dest, name))
+            dest = os.path.dirname(shp)
+            
+            if name is not None:
+                if not name.endswith('.shp'):
+                    name = name + '.shp'
+                
+            else:
+                name = 'SSURGO_WGS84.shp'
+        
+            soils.to_file(os.path.join(dest, name))
 
-    return soils
+        return soils
     
 
 def gpkg(gpkg=str, layer=str, meta=False, export=False, name=None):
