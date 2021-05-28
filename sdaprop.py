@@ -127,9 +127,7 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
                 raise AttributeError(err)
             
             if top > 200:
-                warn.append('Depths greater than 200 cm are not recommended and may return NULL data')
-           
-            
+                warn.append('Depths greater than 200 cm are not recommended and may return NULL data')       
        
         except (TypeError, ValueError, AttributeError) as e:
             print(e)
@@ -137,7 +135,7 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
    
     # categoriacal validation
     if method in catmethods:
-       
+
         try:
             
             if prop is None:
