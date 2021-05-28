@@ -137,6 +137,7 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
    
     # categoriacal validation
     if method in catmethods:
+       
         try:
             
             if prop is None:
