@@ -353,14 +353,17 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
         
         return property_result
     
-    except (exceptions.InvalidURL, exceptions.HTTPError, exceptions.Timeout):
-        print('Requests error, Soil Data Access offline??')
+    except (exceptions.InvalidURL, exceptions.HTTPError, exceptions.Timeout) as e:
+        print(e)
+        raise
         
     except JSONDecodeError as err:
         print('JSON Decode error: ' + err.msg)
         print('This usually happens when nothing is returned. Set prnt option to True and send the query through browser')
-     
+        raise
+        
     except Exception as e:
         print('Unhandled error')
         print(e)
+        raise
         
