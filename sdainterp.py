@@ -38,28 +38,31 @@ def getinterp(df, column, interp = None, method = None,  prnt = False, meta=Fals
     
     try:
         
-        if interp is None:
-            err = 'No soil interpretation was specified.'
-            raise ValueError(err)
-            
-        else:
-            ntrps = showinterps()
-        
-            if not interp in ntrps:
-                err = 'Unknown interpretation specified'
-                raise ValueError(err)
-        
         validmethod = ['wtd_avg', 'dom_comp', 'dom_cond']
         methodstr = ",".join(map("'{0}'".format, validmethod))
+        ntrps = showinterps()
+        
+        if interp is None:
+            err = 'No soil interpretation was specified.'
+            raise TypeError(err)
         
         if method is None:
             err = 'No aggregation method provided. Specify one of the following:: ' + methodstr
+            raise TypeError(err)
+            
+        if not interp in ntrps:
+            err = 'Unknown interpretation specified'
             raise ValueError(err)
-        
+    
         if not method in validmethod:
             err = 'Unknown aggregation method provided. Specify one of the following:: ' + methodstr
             raise ValueError(err)
     
+    except(TypeError, ValueError) as e:
+        print(e)
+        raise
+    
+    try:
         df[column] = df[column].astype('string')
         key_list = pd.Series(df[column].unique()).to_list()
         keys = ",".join(map("'{0}'".format, key_list))

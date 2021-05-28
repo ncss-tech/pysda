@@ -15,7 +15,7 @@ def numprops(show = False):
     
     if show:
         for k,v in numdic.items():
-            print(k,v)
+            print(k + ":::" + v)
         print('\n Use short hand version of property to supply to getprop function')
         
     return numdic
@@ -30,7 +30,7 @@ def catprops(show = False):
     
     if show:
         for k,v in catdic.items():
-            print(k,v)
+            print(k + " ::: " + v)
         print('\n Use short hand version of property to supply to getprop function')
     
     return catdic
@@ -51,7 +51,7 @@ def allprops(show = False):
     
     if show:
         for k,v in saprops.items():
-            print(k,v)
+            print(k + " ::: " + v)
         print('\n Use short hand version of property to supply to getprop function')
     
     return saprops
@@ -85,7 +85,7 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
     
     if not method in validmethod:
         methodstr = ",".join(map("'{0}'".format, validmethod))
-        err = 'Unknown aggregation method. Specify one of the following:: ' + methodstr
+        err = 'Unknown aggregation method. Specify one of the following: ' + methodstr
         raise ValueError(err)
         
     nummethods = ['wtd_avg', 'dom_comp_num', 'minmax']
@@ -93,41 +93,63 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
     
     # numerical validation
     if method in nummethods:
-        
-        if top is None or bottom is None:
-            err = 'Top and bottom parameters are required for the ' + method + ' aggregation method'
-            raise TypeError(err)
-        
-        if not type(top) == int or not type(bottom) == int:
-            err ='Top and bottom variables must be of type integer'
-            raise TypeError(err)
-        
-        if bottom < top:
-            err = 'The value of bottom must be greater (deeper) than the value of top'
-            raise AttributeError(err)
-        
-        if top > 200:
-            warn.append('Depths greater than 200 cm are not recommended and may return NULL data')
+    
+        try:
             
-        if method == 'minmax':
-            if minmax is None:
-                err = 'min or max needs to be set in order to run the minmax aggregation method'
-                raise ValueError(err)
-            elif minmax.upper() not in ['MIN', 'MAX']:
-                err = 'Unrecognized value for minmax.  Use MIN or MAX'
-                raise ValueError(err)
+            props = numprops(show=False)
             
-        props = numprops(show=False)
-        if not prop in props.values():
-            err = 'the property: ' + prop + ' is not a valid choice for the ' + method + ' aggregation method'
-            raise ValueError(err)
-        
+            if prop is None:
+                err = 'Soil property is None.  You must select one.'
+                raise TypeError(err)
+            
+            if top is None or bottom is None:
+                err = 'Top and bottom parameters are required for the ' + method + ' aggregation method'
+                raise TypeError(err)
+            
+            if not type(top) == int or not type(bottom) == int:
+                err ='Top and bottom variables must be of type integer'
+                raise TypeError(err)
+           
+            if not prop in props.values():
+                err = 'the property: ' + prop + ' is not a valid choice for the ' + method + ' aggregation method'
+                raise ValueError(err)
+                
+            if method == 'minmax':
+                if minmax is None:
+                    err = 'min or max needs to be set in order to run the minmax aggregation method'
+                    raise ValueError(err)
+                elif minmax.upper() not in ['MIN', 'MAX']:
+                    err = 'Unrecognized value for minmax.  Use MIN or MAX'
+                    raise ValueError(err)
+            
+            if bottom < top:
+                err = 'The value of bottom must be greater (deeper) than the value of top'
+                raise AttributeError(err)
+            
+            if top > 200:
+                warn.append('Depths greater than 200 cm are not recommended and may return NULL data')       
+       
+        except (TypeError, ValueError, AttributeError) as e:
+            print(e)
+            raise
+   
     # categoriacal validation
     if method in catmethods:
-        props = catprops(show = False)
-        if not prop in props.values():
-            err = 'the property: ' + prop + ' is not a valid choice for the ' + method + ' aggregation method'
-            raise ValueError(err)
+
+        try:
+            
+            if prop is None:
+                err = 'Soil property is None.  You must select one.'
+                TypeError(err)
+                
+            props = catprops(show = False)
+            if not prop in props.values():
+                err = 'the property: ' + prop + ' is not a valid choice for the ' + method + ' aggregation method'
+                ValueError(err)
+        
+        except (TypeError, ValueError) as e:
+            print(e)
+            raise
     
     try:
     
@@ -331,14 +353,17 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
         
         return property_result
     
-    except (exceptions.InvalidURL, exceptions.HTTPError, exceptions.Timeout):
-        print('Requests error, Soil Data Access offline??')
+    except (exceptions.InvalidURL, exceptions.HTTPError, exceptions.Timeout) as e:
+        print(e)
+        raise
         
     except JSONDecodeError as err:
         print('JSON Decode error: ' + err.msg)
         print('This usually happens when nothing is returned. Set prnt option to True and send the query through browser')
-     
+        raise
+        
     except Exception as e:
         print('Unhandled error')
         print(e)
+        raise
         
