@@ -26,7 +26,7 @@ def catprops(show = False):
     :bool show: set to True to print on screen.  Use shorthand notation for prop(erty) assignment.\n
     :return: dictionary of categorical SSURGO properties"""
     
-    catdic = {'Corrosion of Concrete': 'corcon', 'Corrosion of Steel': 'corsteel', 'Drainage Class': 'drainagecl', 'Hydrologic Group': 'hydgrp', 'Taxonomic Class Name': 'taxclname', 'Taxonomic Order': 'taxorder', 'Taxonomic Suborder': 'taxsuborder', 'Taxonomic Temperature Regime': 'taxtempregime', 'Wind Erodibility Group': 'weg', 'Wind Erodibility Index': 'wei', 't Factor': 'tfact'}
+    catdic = {'Corrosion of Concrete': 'corcon', 'Corrosion of Steel': 'corsteel', 'Drainage Class': 'drainagecl', 'Hydrologic Group': 'hydgrp', 'Taxonomic Class Name': 'taxclname', 'Taxonomic Order': 'taxorder', 'Taxonomic Particle Size' : 'taxpartsize' , 'Taxonomic Suborder': 'taxsuborder', 'Taxonomic Temperature Regime': 'taxtempregime', 'Wind Erodibility Group': 'weg', 'Wind Erodibility Index': 'wei', 't Factor': 'tfact'}
     
     if show:
         for k,v in catdic.items():
@@ -145,7 +145,7 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
             props = catprops(show = False)
             if not prop in props.values():
                 err = 'the property: ' + prop + ' is not a valid choice for the ' + method + ' aggregation method'
-                ValueError(err)
+                raise ValueError(err)
         
         except (TypeError, ValueError) as e:
             print(e)
