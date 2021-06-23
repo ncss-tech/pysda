@@ -65,7 +65,7 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
     :df: pandas data frame\n
     :str column: pandas data frame column name\n
     :str prop: SSURGO property, use SSURGO column name, not alias\n
-    :str method: aggregation method\n
+    :str method: aggregation method. \n
     :int top: top horizon depth range in centimeters\n
     :int bottom: bottom horizon depth range in centimeters\n
     :str minmax: set MIN or MAX for minmax method\n
@@ -81,7 +81,7 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
 
     warn = list()
     
-    validmethod = ['wtd_avg', 'dom_comp_cat', 'dom_comp_num','dom_cond', 'minmax']
+    validmethod = ['wtd_avg', 'dom_comp_cat', 'dom_comp_num','dom_cond', 'minmax', 'muaggatt']
     
     if not method in validmethod:
         methodstr = ",".join(map("'{0}'".format, validmethod))
@@ -150,7 +150,12 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
         except (TypeError, ValueError) as e:
             print(e)
             raise
-    
+            
+    if method == 'muaggatt': 
+       if any(var is not None for var in [prop, top, bottom, minmax]):
+           err = "The muaggatt method returns all fields (pre-aggregated properties) in this table. The parameters prop, top, bottom, minmax must equal None."
+           raise TypeError(err)
+                
     try:
     
         df[column] = df[column].astype('string')
@@ -306,6 +311,15 @@ def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, 
             LEFT OUTER JOIN #last_step ON #last_step.mukey=#last_step2.mukey
             GROUP BY #last_step2.areasymbol, #last_step2.musym, #last_step2.muname, #last_step2.mukey, #last_step2.""" + aProp + """
             ORDER BY #last_step2.areasymbol, #last_step2.musym, #last_step2.muname, #last_step2.mukey, #last_step2.""" + aProp
+        if method == 'muaggatt':
+            q = """ --- map unit aggregae table
+            SELECT musym,muname,mustatus,slopegraddcp,slopegradwta,brockdepmin,wtdepannmin,wtdepaprjunmin,
+            flodfreqdcd,flodfreqmax,pondfreqprs,aws025wta,aws050wta,aws0100wta,aws0150wta,drclassdcd,drclasswettest,
+            hydgrpdcd,iccdcd,iccdcdpct,niccdcd,niccdcdpct,engdwobdcd,engdwbdcd,engdwbll,engdwbml,
+            engstafdcd,engstafll,engstafml,engsldcd,engsldcp,englrsdcd,engcmssdcd,engcmssmp,urbrecptdcd,
+            urbrecptwta,forpehrtdcp,hydclprs,awmmfpwwta,mukey
+            FROM muaggatt
+            where mukey IN (""" + keys + """)"""            
         elif method == "dom_cond":
             q = """--dominant condition
             SELECT areasymbol, musym, muname, mu.mukey/1  AS mukey,
