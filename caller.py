@@ -1,8 +1,8 @@
 def sda(q=str, meta=False):
-    """accessing Soil Data Access POST REST API\n
+    """accessing Soil Data Access POST REST API
        
-       :str q: query sent to doil data access\n
-       :bool meta: instructions for returning column information\n
+       :str q: query sent to doil data access
+       :bool meta: instructions for returning column information
        :return: python dictionary"""
     
     import requests, json

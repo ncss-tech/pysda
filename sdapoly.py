@@ -9,50 +9,51 @@ class Terminate(Exception):
 
 def msg(s):
     print(s)
-    
-def tab(q, meta = False):
-    
-    import json, requests, pandas as pd
-    from json.decoder import JSONDecodeError
-    from requests import exceptions
-    
-    try:
 
-        theURL = "https://sdmdataaccess.nrcs.usda.gov"
-        theURL = theURL + "/Tabular/SDMTabularService/post.rest"
-        
-        rDic = {}
-        
-        if meta:
-            rDic["format"] = "JSON+COLUMNNAME+METADATA"
-        else:
-            rDic["format"] = "JSON+COLUMNNAME"
-        
-        rDic["query"] = q
-        rData = json.dumps(rDic)
-        
-        results = requests.post(data=rData, url=theURL) 
-        
-        qData = results.json()
-            
-        cols = qData.get('Table')[0]
-        data = qData.get('Table')[1:]
-            
-        df = pd.DataFrame(data, columns = cols)
-            
-        return df
+# this function was migrated to the module sdatab.tabular
+# def tab(q, meta = False):
     
-    except (exceptions.InvalidURL, exceptions.HTTPError, exceptions.Timeout):
-        print('Requests error, Soil Data Access offline??')
+#     import json, requests, pandas as pd
+#     from json.decoder import JSONDecodeError
+#     from requests import exceptions
+    
+#     try:
+
+#         theURL = "https://sdmdataaccess.nrcs.usda.gov"
+#         theURL = theURL + "/Tabular/SDMTabularService/post.rest"
         
-    except JSONDecodeError as err:
-        print('JSON Decode error: ' + err.msg)
-        print('This usually happens when the extent is too large, try smaller extent.')
+#         rDic = {}
+        
+#         if meta:
+#             rDic["format"] = "JSON+COLUMNNAME+METADATA"
+#         else:
+#             rDic["format"] = "JSON+COLUMNNAME"
+        
+#         rDic["query"] = q
+#         rData = json.dumps(rDic)
+        
+#         results = requests.post(data=rData, url=theURL) 
+        
+#         qData = results.json()
+            
+#         cols = qData.get('Table')[0]
+#         data = qData.get('Table')[1:]
+            
+#         df = pd.DataFrame(data, columns = cols)
+            
+#         return df
+    
+#     except (exceptions.InvalidURL, exceptions.HTTPError, exceptions.Timeout):
+#         print('Requests error, Soil Data Access offline??')
+        
+#     except JSONDecodeError as err:
+#         print('JSON Decode error: ' + err.msg)
+#         print('This usually happens when the extent is too large, try smaller extent.')
      
     
-    except Exception as e:
-        print('Unhandled error')
-        print(e)
+#     except Exception as e:
+#         print('Unhandled error')
+#         print(e)
         
 
 def sdaCall(gdf, meta=False):
@@ -282,14 +283,6 @@ def gdf(geodf, meta=False):
     soils = sdaCall(geodf)
     
     return soils
-
-#import sys, os, json, requests, pandas as pd, geopandas as gpd, shapely, fiona
-# from shapely import wkt as swkt
-
-
-
-# wkt strings are long...
-# pd.set_option('display.max_colwidth', None)
 
 
     
