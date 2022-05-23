@@ -33,7 +33,7 @@ def sda(q=str, meta=False):
         return True, data
         
     except JSONDecodeError as e:
-        msg = 'JSONDecodeError: ' + e.msg
+        msg = e
         print(msg)
         return False, msg
     

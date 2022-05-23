@@ -59,7 +59,7 @@ def allprops(show = False):
  
 
 # (aProp, areaSym, aggMethod, tDep, bDep, mmC)
-def getprop(df, column=str, prop = None, method = None,  top=None, bottom=None, minmax = None, prnt = False, meta=False):
+def getprop(df, column=str, prop=None, method=None,  top=None, bottom=None, minmax=None, prnt=False, meta=False):
     
     """Get SSURGO property from Soil Data Access.\n
     :df: pandas data frame\n
