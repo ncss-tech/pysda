@@ -50,17 +50,11 @@ def ssurgo(state=None, search=None):
     :param state str: specify a state abbreviation such as 'NY'
     :param search str: specify a search term such as 'hamilton'
     :return  data frame: a pandas data frame"""
-<<<<<<< HEAD
-
-    import pandas as pd
-    from pysda import caller
-
-=======
     
     import pandas as pd
     from pysda import caller
     
->>>>>>> Dev
+
     valid = ['AK','AL','AR','AS','AZ','CA','CO','CT','DC','DE','FL','FM','GA',\
              'GU','HI','IA','ID','IL','IN','KS','KY','LA','MA','MD','ME','MH',\
             'MI','MN','MO','MP','MS','MT','NC','ND','NE','NH','NJ',\
@@ -226,20 +220,11 @@ def outofcycle():
      these survey areas which will help you determine if your local data set(s) need updating.
 
      :return data frame: pandas data frame"""
-<<<<<<< HEAD
-
-     import pandas as pd
-     from pysda import caller
-
-     q = """select left(areasymbol, 2) as state, areasymbol, areaname, saverest
-=======
      
      import pandas as pd
      from pysda import caller
      
-     q = """select left(areasymbol, 2) as state, areasymbol, saverest
->>>>>>> Dev
-     from sacatalog
+     q = """from sacatalog
      where saverest > '10-01-2021'
      ORDER BY areasymbol, saverest"""
 
