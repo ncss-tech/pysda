@@ -51,7 +51,8 @@ def ssurgo(state=None, search=None):
     :param search str: specify a search term such as 'hamilton'
     :return  data frame: a pandas data frame"""
     
-    import caller, pandas as pd
+    import pandas as pd
+    from pysda import caller
     
     valid = ['AK','AL','AR','AS','AZ','CA','CO','CT','DC','DE','FL','FM','GA',\
              'GU','HI','IA','ID','IL','IN','KS','KY','LA','MA','MD','ME','MH',\
