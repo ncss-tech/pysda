@@ -215,7 +215,8 @@ def outofcycle():
      
      :return data frame: pandas data frame"""
      
-     import caller, pandas as pd
+     import pandas as pd
+     from pysda import caller
      
      q = """select left(areasymbol, 2) as state, areasymbol, saverest
      from sacatalog
