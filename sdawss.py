@@ -224,7 +224,8 @@ def outofcycle():
      import pandas as pd
      from pysda import caller
      
-     q = """from sacatalog
+     q = """select left(areasymbol, 2) as state, areasymbol, saverest
+     from sacatalog
      where saverest > '10-01-2021'
      ORDER BY areasymbol, saverest"""
 
