@@ -16,7 +16,8 @@ def tabular(q, meta=False):
     :param q str: SQL query
     :return frame: pandas data frame"""
         
-    import caller, pandas as pd
+    import pandas as pd
+    from pysda import caller
     
     resp, data = caller.sda(q=q, meta=False)
     
