@@ -59,7 +59,7 @@ def allprops(show = False):
  
 
 # (aProp, areaSym, aggMethod, tDep, bDep, mmC)
-def getprop(df, column=str, prop=None, method=None,  top=None, bottom=None, minmax=None, prnt=False, meta=False):
+def getprop(df, column=str, prop=None, method=None,  top=None, bottom=None, minmax=None, prnt=None, meta=None):
     
     """Get SSURGO property from Soil Data Access.\n
     :df: pandas data frame\n
@@ -88,9 +88,9 @@ def getprop(df, column=str, prop=None, method=None,  top=None, bottom=None, minm
         err = 'Unknown aggregation method. Specify one of the following: ' + methodstr
         raise ValueError(err)
         
-    nummethods = ['wtd_avg', 'dom_comp_num', 'minmax']
+    nummethods = ['wtd_avg', 'dom_comp_num']
     catmethods = ['dom_comp_cat', 'dom_cond']
-    
+    minmax = ['minmax']
     # numerical validation
     if method in nummethods:
     
@@ -113,14 +113,6 @@ def getprop(df, column=str, prop=None, method=None,  top=None, bottom=None, minm
             if not prop in props.values():
                 err = 'the property: ' + prop + ' is not a valid choice for the ' + method + ' aggregation method'
                 raise ValueError(err)
-                
-            if method == 'minmax':
-                if minmax is None:
-                    err = 'min or max needs to be set in order to run the minmax aggregation method'
-                    raise ValueError(err)
-                elif minmax.upper() not in ['MIN', 'MAX']:
-                    err = 'Unrecognized value for minmax.  Use MIN or MAX'
-                    raise ValueError(err)
             
             if bottom < top:
                 err = 'The value of bottom must be greater (deeper) than the value of top'
@@ -150,7 +142,33 @@ def getprop(df, column=str, prop=None, method=None,  top=None, bottom=None, minm
         except (TypeError, ValueError) as e:
             print(e)
             raise
+    
+    if method in minmax:
+        
+        try:
             
+            props = numprops(show=False)
+            
+            if prop is None:
+                err = 'Soil property is None.  You must select one.'
+                raise TypeError(err)
+                
+            if not prop in props.values():
+                err = 'the property: ' + prop + ' is not a valid choice for the ' + method + ' aggregation method'
+                raise ValueError(err)
+        
+            if minmax is None:
+                err = 'min or max needs to be set in order to run the minmax aggregation method'
+                raise ValueError(err)
+            elif minmax.upper() not in ['MIN', 'MAX']:
+                err = 'Unrecognized value for minmax.  Use MIN or MAX'
+                raise ValueError(err)
+                
+        except (TypeError, ValueError, AttributeError) as e:
+            print(e)
+            raise
+
+        
     if method == 'muaggatt': 
        if any(var is not None for var in [prop, top, bottom, minmax]):
            err = "The muaggatt method returns all fields (pre-aggregated properties) in this table. The parameters prop, top, bottom, minmax must equal None."
