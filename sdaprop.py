@@ -90,7 +90,7 @@ def getprop(df, column=str, prop=None, method=None,  top=None, bottom=None, minm
         
     nummethods = ['wtd_avg', 'dom_comp_num']
     catmethods = ['dom_comp_cat', 'dom_cond']
-    minmax = ['minmax']
+    minmaxmethod = ['minmax']
     # numerical validation
     if method in nummethods:
     
@@ -143,7 +143,7 @@ def getprop(df, column=str, prop=None, method=None,  top=None, bottom=None, minm
             print(e)
             raise
     
-    if method in minmax:
+    if method in minmaxmethod:
         
         try:
             
