@@ -24,7 +24,7 @@ def tabular(q, meta=False):
     if resp:
         
         table = data.get('Table')
-        df = pd.DataFrame(data = table[2:], columns = table[0])
+        df = pd.DataFrame(data = table[1:], columns = table[0])
         return df
     else:
         #error should be thrown from caller
