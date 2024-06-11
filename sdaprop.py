@@ -11,13 +11,15 @@ def numprops(show = False):
     :bool show: set to True to print to screen.  Use shorthand notation for prop(erty) assignment.\n
     :return: dictionary of numeric SSURGO properties"""
     
-    numdic = {'0.1 bar H2O - Rep Value': 'wtenthbar_r', '0.33 bar H2O - Rep Value': 'wthirdbar_r', '15 bar H2O - Rep Value': 'wfifteenbar_r', 'Available Water Capacity - Rep Value': 'awc_r', 'Bray 1 Phosphate - Rep Value': 'pbray1_r', 'Bulk Density 0.1 bar H2O - Rep Value': 'dbtenthbar_r', 'Bulk Density 0.33 bar H2O - Rep Value': 'dbthirdbar_r', 'Bulk Density 15 bar H2O - Rep Value': 'dbfifteenbar_r', 'Bulk Density oven dry - Rep Value': 'dbovendry_r', 'CaCO3 Clay - Rep Value': 'claysizedcarb_r', 'Calcium Carbonate - Rep Value': 'caco3_r', 'Cation Exchange Capcity - Rep Value': 'cec7_r', 'Coarse Sand - Rep Value': 'sandco_r', 'Coarse Silt - Rep Value': 'siltco_r', 'Effective Cation Exchange Capcity - Rep Value': 'ecec_r', 'Electrial Conductivity 1:5 by volume - Rep Value': 'ec15_r', 'Electrical Conductivity - Rep Value': 'ec_r', 'Exchangeable Sodium Percentage - Rep Value': 'esp_r', 'Extract Aluminum - Rep Value': 'extral_r', 'Extractable Acidity - Rep Value': 'extracid_r', 'Fine Sand - Rep Value': 'sandfine_r', 'Fine Silt - Rep Value': 'siltfine_r', 'Free Iron - Rep Value': 'freeiron_r', 'Gypsum - Rep Value': 'gypsum_r', 'LEP - Rep Value': 'lep_r', 'Liquid Limit - Rep Value': 'll_r', 'Medium Sand - Rep Value': 'sandmed_r', 'Organic Matter - Rep Value': 'om_r', 'Oxalate Aluminum - Rep Value': 'aloxalate_r', 'Oxalate Iron - Rep Value': 'feoxalate_r', 'Oxalate Phosphate - Rep Value': 'poxalate_r', 'Plasticity Index - Rep Value': 'pi_r', 'Range Production - Favorable Year': 'rsprod_h', 'Range Production - Normal Year': 'rsprod_r', 'Range Production - Unfavorable Year': 'rsprod_l', 'Rock Fragments 3 - 10 cm - Rep Value': 'frag3to10_r', 'Rock Fragments > 10 cm - Rep Value': 'fraggt10_r', 'Rubbed Fiber % - Rep Value': 'fiberrubbedpct_r', 'Satiated H2O - Rep Value': 'wsatiated_r', 'Saturated Hydraulic Conductivity - Rep Value': 'ksat_r', 'Sodium Adsorption Ratio - Rep Value': 'sar_r', 'Sum of Bases - Rep Value': 'sumbases_r', 'Total Clay - Rep Value': 'claytotal_r', 'Total Phosphate - Rep Value': 'ptotal_r', 'Total Sand - Rep Value': 'sandtotal_r', 'Total Silt - Rep Value': 'silttotal_r', 'Unrubbed Fiber % - Rep Value': 'fiberunrubbedpct_r', 'Very Coarse Sand - Rep Value': 'sandvc_r', 'Very Fine Sand - Rep Value': 'sandvf_r', 'Water Soluble Phosphate - Rep Value': 'ph2osoluble_r', 'no. 10 sieve - Rep Value': 'sieveno10_r', 'no. 200 sieve - Rep Value': 'sieveno200_r', 'no. 4 sieve - Rep Value': 'sieveno4_r', 'no. 40 sieve - Rep Value': 'sieveno40_r'}
-    
+    numdic = {'0.1 bar H2O - Rep Value': 'wtenthbar_r', '0.33 bar H2O - Rep Value': 'wthirdbar_r', '15 bar H2O - Rep Value': 'wfifteenbar_r', 'Available Water Capacity - Rep Value': 'awc_r', 'Bray 1 Phosphate - Rep Value': 'pbray1_r', 'Bulk Density 0.1 bar H2O - Rep Value': 'dbtenthbar_r', 'Bulk Density 0.33 bar H2O - Rep Value': 'dbthirdbar_r', 'Bulk Density 15 bar H2O - Rep Value': 'dbfifteenbar_r', 'Bulk Density oven dry - Rep Value': 'dbovendry_r', 'CaCO3 Clay - Rep Value': 'claysizedcarb_r', 'Calcium Carbonate - Rep Value': 'caco3_r', 'Cation Exchange Capcity - Rep Value': 'cec7_r', 'Coarse Sand - Rep Value': 'sandco_r', 'Coarse Silt - Rep Value': 'siltco_r', 'Effective Cation Exchange Capcity - Rep Value': 'ecec_r', 'Electrial Conductivity 1:5 by volume - Rep Value': 'ec15_r', 'Electrical Conductivity - Rep Value': 'ec_r', 'Exchangeable Sodium Percentage - Rep Value': 'esp_r', 'Extract Aluminum - Rep Value': 'extral_r', 'Extractable Acidity - Rep Value': 'extracid_r', 'Fine Sand - Rep Value': 'sandfine_r', 'Fine Silt - Rep Value': 'siltfine_r', 'Free Iron - Rep Value': 'freeiron_r', 'Gypsum - Rep Value': 'gypsum_r', 'Kf ': 'kffact', 'Kw ': 'kwfact', 'LEP - Rep Value': 'lep_r', 'Liquid Limit - Rep Value': 'll_r', 'Medium Sand - Rep Value': 'sandmed_r', 'Organic Matter - Rep Value': 'om_r', 'Oxalate Aluminum - Rep Value': 'aloxalate_r', 'Oxalate Iron - Rep Value': 'feoxalate_r', 'Oxalate Phosphate - Rep Value': 'poxalate_r', 'Plasticity Index - Rep Value': 'pi_r', 'Range Production - Favorable Year': 'rsprod_h', 'Range Production - Normal Year': 'rsprod_r', 'Range Production - Unfavorable Year': 'rsprod_l', 'Rock Fragments 3 - 10 cm - Rep Value': 'frag3to10_r', 'Rock Fragments > 10 cm - Rep Value': 'fraggt10_r', 'Rubbed Fiber % - Rep Value': 'fiberrubbedpct_r', 'Satiated H2O - Rep Value': 'wsatiated_r', 'Saturated Hydraulic Conductivity - Rep Value': 'ksat_r', 'Sodium Adsorption Ratio - Rep Value': 'sar_r', 'Sum of Bases - Rep Value': 'sumbases_r', 'Total Clay - Rep Value': 'claytotal_r', 'Total Phosphate - Rep Value': 'ptotal_r', 'Total Sand - Rep Value': 'sandtotal_r', 'Total Silt - Rep Value': 'silttotal_r', 'Unrubbed Fiber % - Rep Value': 'fiberunrubbedpct_r', 'Very Coarse Sand - Rep Value': 'sandvc_r', 'Very Fine Sand - Rep Value': 'sandvf_r', 'Water Soluble Phosphate - Rep Value': 'ph2osoluble_r', 'no. 10 sieve - Rep Value': 'sieveno10_r', 'no. 200 sieve - Rep Value': 'sieveno200_r', 'no. 4 sieve - Rep Value': 'sieveno4_r', 'no. 40 sieve - Rep Value': 'sieveno40_r'} 
     if show:
         for k,v in numdic.items():
             print(k + ":::" + v)
         print('\n Use short hand version of property to supply to getprop function')
-        
+    
+    print("""Note: Kf and Kw have numeric values at the chorizon level, 
+    they are really caegorical data and only available tothe minmax aggegation method""")    
+    
     return numdic
 
 def catprops(show = False):
@@ -26,7 +28,7 @@ def catprops(show = False):
     :bool show: set to True to print on screen.  Use shorthand notation for prop(erty) assignment.\n
     :return: dictionary of categorical SSURGO properties"""
     
-    catdic = {'Corrosion of Concrete': 'corcon', 'Corrosion of Steel': 'corsteel', 'Drainage Class': 'drainagecl', 'Hydrologic Group': 'hydgrp', 'Kf ': 'kffact', 'Kw ': 'kwfact', 'Taxonomic Class Name': 'taxclname', 'Taxonomic Order': 'taxorder', 'Taxonomic Particle Size' : 'taxpartsize' , 'Taxonomic Suborder': 'taxsuborder', 'Taxonomic Temperature Regime': 'taxtempregime', 'Wind Erodibility Group': 'weg', 'Wind Erodibility Index': 'wei', 't Factor': 'tfact'}
+    catdic = {'Corrosion of Concrete': 'corcon', 'Corrosion of Steel': 'corsteel', 'Drainage Class': 'drainagecl', 'Hydrologic Group': 'hydgrp', 'Taxonomic Class Name': 'taxclname', 'Taxonomic Order': 'taxorder', 'Taxonomic Particle Size' : 'taxpartsize' , 'Taxonomic Suborder': 'taxsuborder', 'Taxonomic Temperature Regime': 'taxtempregime', 'Wind Erodibility Group': 'weg', 'Wind Erodibility Index': 'wei', 't Factor': 'tfact'}
     
     if show:
         for k,v in catdic.items():
@@ -97,6 +99,8 @@ def getprop(df, column=str, prop=None, method=None,  top=None, bottom=None, minm
         try:
             
             props = numprops(show=False)
+            del props['Kf']
+            del props['Kw']
             
             if prop is None:
                 err = 'Soil property is None.  You must select one.'
