@@ -72,8 +72,8 @@ def numprops(show = False):
             print(k + ":::" + v)
         print('\n Use short hand version of property to supply to getprop function')
     
-    print("""Note: Kf and Kw have numeric values at the chorizon level, 
-    they are really categorical data and only available to the minmax aggegation method""")    
+    print("""Note: Kf and Kw have numeric values at the chorizon level,
+they are really categorical data and only available to the minmax aggegation method""")    
     
     return numdic
 
